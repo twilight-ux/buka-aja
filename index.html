@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Bareng.com</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000033;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .virus-screen {
+            text-align: center;
+            animation: glitch 0.5s infinite;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: red;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .matrix-fall {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .fake-button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(to bottom, #ff5555, #ff0000);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            transition: all 0.3s;
+        }
+
+        .fake-button:hover {
+            background: linear-gradient(to bottom, #ff0000, #cc0000);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        .warning-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: red;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .terminal-code {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff00;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            max-width: 800px;
+        }
+
+        .tab {
+            margin-left: 40px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix" class="matrix-fall"></canvas>
+    <div class="virus-screen">
+        <h1>VIRUS DETECTED!</h1>
+        <p>Your device has been compromised</p>
+        <div class="terminal-code">
+            <p>Root@device:~$ scanning system...</p>
+            <p>Root@device:~$ <span class="blink">_</span></p>
+            <p>Root@device:~$ malware detected: AndroidOS.Prank.HP</p>
+            <p>Root@device:~$ initiating system takeover...</p>
+            <p>Root@device:~$ <span id="progress">[&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&] 100%</span></p>
+            <p>Root@device:~$ device locked</p>
+            <p class="tab">ERROR: SYSTEM CRITICAL FAILURE</p>
+        </div>
+        <button class="fake-button" onclick="showWarning()">DECRYPT FILES</button>
+    </div>
+
+    <div class="warning-message" id="warning">
+        <h1>ACCESS DENIED!</h1>
+        <p>Closing this page will damage your device</p>
+        <p>To exit safely:</p>
+        <p>1. Screenshot this page</p>
+        <p>2. Send to developer@example.com</p>
+        <p>3. Wait for unlock code</p>
+        <button class="fake-button" onclick="hideWarning()">CONTINUE DECRYPTION</button>
+    </div>
+
+    <script>
+        // Matrix effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const rainDrops = [];
+
+        for(let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 33, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff00';
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if(rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30);
+
+        // Blinking cursor effect
+        setInterval(() => {
+            const cursor = document.querySelector('.blink');
+            cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
+        }, 500);
+
+        // Warning message when trying to exit
+        function showWarning() {
+            document.getElementById('warning').style.display = 'flex';
+        }
+
+        function hideWarning() {
+            document.getElementById('warning').style.display = 'none';
+        }
+
+        // Detect when user tries to leave the page
+        window.onblur = function() {
+            document.getElementById('warning').style.display = 'flex';
+        };
+
+        // Fullscreen effect
+        function requestFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Attempt fullscreen on load
+        setTimeout(requestFullscreen, 500);
+
+        // Make it harder to exit
+        window.oncontextmenu = function(e) {
+            e.preventDefault();
+            showWarning();
+            return false;
+        };
+
+        document.onkeydown = function(e) {
+            if(e.key === "F5" || e.key === "F11" || e.key === "Escape") {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
+
